@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/studiolanza/static/css/main.c73c3a4b.css",
+    "main.js": "/studiolanza/static/js/main.e90a5993.js",
+    "static/media/remixicon.svg?t=1681573354175": "/studiolanza/static/media/remixicon.7b85b7f8453487681fc4.svg",
+    "static/media/remixicon.eot?t=1681573354175": "/studiolanza/static/media/remixicon.ae7015155af44fd22375.eot",
+    "static/media/remixicon.ttf?t=1681573354175": "/studiolanza/static/media/remixicon.8df75b42f93ef0e1f8aa.ttf",
+    "static/media/portfolio-06.jpg": "/studiolanza/static/media/portfolio-06.ea07d96454b4d7036952.jpg",
+    "static/media/portfolio-03.jpg": "/studiolanza/static/media/portfolio-03.78e7f47277db062e42ce.jpg",
+    "static/media/portfolio-05.jpg": "/studiolanza/static/media/portfolio-05.48fc29908a42185ebcac.jpg",
+    "static/media/portfolio-04.jpg": "/studiolanza/static/media/portfolio-04.b181b68b278c583999d7.jpg",
+    "static/media/portfolio-02.jpg": "/studiolanza/static/media/portfolio-02.18f98e2c71da9c1289b0.jpg",
+    "static/media/portfolio-01.jpg": "/studiolanza/static/media/portfolio-01.89a346463c90b2965a9e.jpg",
+    "static/media/portfolio-07.jpg": "/studiolanza/static/media/portfolio-07.7e51d9d8fbe739866e5c.jpg",
+    "static/media/remixicon.woff?t=1681573354175": "/studiolanza/static/media/remixicon.56b6495e17f23a23803a.woff",
+    "static/media/remixicon.woff2?t=1681573354175": "/studiolanza/static/media/remixicon.52f02e1386dd3597bc00.woff2",
+    "index.html": "/studiolanza/index.html",
+    "main.c73c3a4b.css.map": "/studiolanza/static/css/main.c73c3a4b.css.map",
+    "main.e90a5993.js.map": "/studiolanza/static/js/main.e90a5993.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c73c3a4b.css",
+    "static/js/main.e90a5993.js"
+  ]
+}
