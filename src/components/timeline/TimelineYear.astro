@@ -1,0 +1,14 @@
+---
+import TimelineProjectCard from "./TimelineProjectCard.astro";
+const { year, projects } = Astro.props;
+---
+<section class="grid grid-cols-1 gap-8 md:grid-cols-[140px_1fr] md:gap-12" data-reveal>
+  <div class="relative pl-8 md:pl-10">
+    <span class="absolute left-[10px] top-2 h-2 w-2 rounded-full bg-zinc-900 md:left-[14px]"></span>
+    <h2 class="text-xl md:text-2xl font-medium tracking-tight">{year}</h2>
+  </div>
+
+  <div class="space-y-8">
+    {projects.map((p) => <TimelineProjectCard project={p} />)}
+  </div>
+</section>
