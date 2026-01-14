@@ -2,9 +2,10 @@
 const { project } = Astro.props;
 ---
 <article class="group">
-  <a
-    href={`/projects/${project.slug}/`}
-    class="block rounded-xl border border-zinc-200 bg-white/60 p-6 md:p-7 transition hover:border-zinc-300"
+  <button
+    type="button"
+    class="w-full text-left rounded-xl border border-zinc-200 bg-white/60 p-6 md:p-7 transition hover:border-zinc-300"
+    data-project={project.slug}
   >
     <div class="flex flex-col gap-3">
       <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -26,5 +27,5 @@ const { project } = Astro.props;
         ))}
       </div>
     </div>
-  </a>
+  </button>
 </article>

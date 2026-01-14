@@ -2,6 +2,8 @@
 import Container from "../layout/Container.astro";
 import TimelineYear from "./TimelineYear.astro";
 import timeline from "../../content/timeline.json";
+
+const years = timeline.map((b) => b.year);
 ---
 <section class="py-16 md:py-24">
   <Container>
@@ -15,21 +17,57 @@ import timeline from "../../content/timeline.json";
       </p>
     </header>
 
-    <div class="relative">
-      <div class="pointer-events-none absolute left-3 top-0 h-full w-px bg-zinc-200 md:left-4"></div>
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-[180px_1fr] md:gap-14">
+      <!-- nav -->
+      <aside class="md:sticky md:top-10 md:self-start">
+        <!-- mobile -->
+        <div class="md:hidden">
+          <label class="sr-only" for="year-jump">Vai all’anno</label>
+          <select
+            id="year-jump"
+            class="w-full rounded-xl border border-zinc-200 bg-white/70 px-4 py-3 text-sm"
+          >
+            {years.map((y) => <option value={`y-${y}`}>{y}</option>)}
+          </select>
+        </div>
 
-      <ol class="space-y-14 md:space-y-20">
-        {timeline.map((block) => (
-          <li>
-            <TimelineYear year={block.year} projects={block.projects} />
-          </li>
-        ))}
-      </ol>
+        <!-- desktop -->
+        <nav class="hidden md:block">
+          <p class="mb-4 text-xs tracking-wide text-zinc-600">timeline</p>
+          <ol class="space-y-2">
+            {years.map((y) => (
+              <li>
+                <a
+                  href={`#y-${y}`}
+                  data-year-link={y}
+                  class="inline-flex rounded-full px-3 py-1 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100"
+                >
+                  {y}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+
+      <!-- timeline -->
+      <div class="relative">
+        <div class="pointer-events-none absolute left-3 top-0 h-full w-px bg-zinc-200 md:left-4"></div>
+
+        <ol class="space-y-14 md:space-y-20">
+          {timeline.map((block) => (
+            <li>
+              <TimelineYear year={block.year} projects={block.projects} />
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </Container>
 </section>
 
 <script>
+  // reveal
   const items = document.querySelectorAll("[data-reveal]");
   const io = new IntersectionObserver(
     (entries) => {
@@ -43,6 +81,62 @@ import timeline from "../../content/timeline.json";
     { threshold: 0.15 }
   );
   items.forEach((el) => io.observe(el));
+
+  // mobile jump
+  const sel = document.getElementById("year-jump");
+  if (sel) {
+    sel.addEventListener("change", () => {
+      const id = sel.value;
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+  // active year (desktop) — stable
+  const yearSections = document.querySelectorAll("[data-year]");
+  const yearLinks = document.querySelectorAll("[data-year-link]");
+  const ratios = new Map(); // year -> intersectionRatio
+
+  const setActive = (year) => {
+    yearLinks.forEach((a) => {
+      const isActive = String(a.dataset.yearLink) === String(year);
+      a.classList.toggle("bg-zinc-900", isActive);
+      a.classList.toggle("text-zinc-50", isActive);
+      a.classList.toggle("hover:bg-zinc-900", isActive);
+      a.classList.toggle("hover:text-zinc-50", isActive);
+    });
+  };
+
+  const pickMostVisible = () => {
+    let bestYear = null;
+    let bestRatio = 0;
+
+    for (const [year, ratio] of ratios.entries()) {
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        bestYear = year;
+      }
+    }
+
+    if (bestYear) setActive(bestYear);
+  };
+
+  const yo = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        const year = e.target.dataset.year;
+        if (e.isIntersecting) ratios.set(year, e.intersectionRatio);
+        else ratios.delete(year);
+      }
+      pickMostVisible();
+    },
+    {
+      // "fascia" centrale: riduce i casi in cui 2 anni sono attivi insieme
+      rootMargin: "-35% 0px -55% 0px",
+      threshold: [0, 0.2, 0.4, 0.6, 0.8]
+    }
+  );
+
+  yearSections.forEach((s) => yo.observe(s));
 </script>
 
 <style>

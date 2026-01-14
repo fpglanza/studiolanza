@@ -3,13 +3,77 @@
     "year": 2024,
     "projects": [
       {
-        "slug": "progetto-demo",
-        "title": "Progetto Demo",
-        "client": "Cliente",
+        "slug": "atlante-identita",
+        "title": "Atlante",
+        "client": "Fondazione Atlante",
         "type": "Brand identity",
-        "cover": "/images/projects/progetto-demo/cover.jpg",
-        "excerpt": "Una descrizione breve, sobria, editoriale.",
-        "tags": ["Identity", "Print"]
+        "cover": "/images/projects/atlante-identita/cover.jpg",
+        "excerpt": "Sistema visivo essenziale, costruito su griglia e tipografia.",
+        "tags": ["Identity", "System"]
+      },
+      {
+        "slug": "museo-editoriale",
+        "title": "Museo Civico",
+        "client": "Comune",
+        "type": "Editorial design",
+        "cover": "/images/projects/museo-editoriale/cover.jpg",
+        "excerpt": "Catalogo sobrio: ritmo, margini ampi, immagini come pausa.",
+        "tags": ["Editorial", "Print"]
+      }
+    ]
+  },
+  {
+    "year": 2025,
+    "projects": [
+      {
+        "slug": "officina-wayfinding",
+        "title": "Officina",
+        "client": "Spazio culturale",
+        "type": "Wayfinding",
+        "cover": "/images/projects/officina-wayfinding/cover.jpg",
+        "excerpt": "Segnaletica discreta: contrasto alto, gerarchie chiare.",
+        "tags": ["Wayfinding", "Signage"]
+      },
+      {
+        "slug": "vino-etichetta",
+        "title": "Linea Etichette",
+        "client": "Cantina",
+        "type": "Packaging",
+        "cover": "/images/projects/vino-etichetta/cover.jpg",
+        "excerpt": "Etichette tipografiche, micro-dettagli e carta come materia.",
+        "tags": ["Packaging", "Print"]
+      },
+      {
+        "slug": "studio-sito",
+        "title": "Sito Studio",
+        "client": "Studio professionale",
+        "type": "Web",
+        "cover": "/images/projects/studio-sito/cover.jpg",
+        "excerpt": "Interfaccia minimale: poche regole, spazi generosi, contenuto al centro.",
+        "tags": ["Web", "UI"]
+      }
+    ]
+  },
+  {
+    "year": 2026,
+    "projects": [
+      {
+        "slug": "archivio-20-anni",
+        "title": "Archivio 20+",
+        "client": "studiolanza",
+        "type": "Archive concept",
+        "cover": "/images/projects/archivio-20-anni/cover.jpg",
+        "excerpt": "Timeline come racconto: continuità, selezione, silenzio visivo.",
+        "tags": ["Archive", "Timeline"]
+      },
+      {
+        "slug": "mostra-identita",
+        "title": "Mostra",
+        "client": "Istituzione",
+        "type": "Exhibition",
+        "cover": "/images/projects/mostra-identita/cover.jpg",
+        "excerpt": "Titoli netti, pannelli misurati, immagini come documenti.",
+        "tags": ["Exhibition", "Art direction"]
       }
     ]
   }
