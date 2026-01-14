@@ -66,7 +66,7 @@ const years = timeline.map((b) => b.year);
   </Container>
   <div
     id="project-overlay"
-    class="fixed inset-0 z-50 hidden"
+    class="fixed inset-0 z-50 hidden pointer-events-none"
     aria-hidden="true"
   >
     <div class="absolute inset-0 bg-zinc-900/30" data-overlay-backdrop></div>
@@ -100,8 +100,14 @@ const years = timeline.map((b) => b.year);
   </div>
 </section>
 
+<script
+  id="projects-data"
+  type="application/json"
+  set:html={JSON.stringify(timeline)}
+></script>
+
 <script>
-   // reveal
+  // reveal
   const items = document.querySelectorAll("[data-reveal]");
   const io = new IntersectionObserver(
     (entries) => {
@@ -167,7 +173,18 @@ const years = timeline.map((b) => b.year);
 
   yearSections.forEach((s) => yo.observe(s));
 
-  // overlay (minimal) + gallery injected on open
+  // --- data from JSON (slug -> project)
+  const dataEl = document.getElementById("projects-data");
+  const timelineData = dataEl ? JSON.parse(dataEl.textContent) : [];
+  const projectBySlug = new Map();
+
+  timelineData.forEach((block) => {
+    (block.projects || []).forEach((p) => {
+      projectBySlug.set(p.slug, { ...p, year: block.year });
+    });
+  });
+
+  // overlay
   const overlay = document.getElementById("project-overlay");
   const titleEl = document.getElementById("overlay-title");
   const metaEl = document.getElementById("overlay-meta");
@@ -178,16 +195,15 @@ const years = timeline.map((b) => b.year);
   const openOverlay = (btn) => {
     if (!overlay) return;
 
-    const title = btn.dataset.title || "";
-    const client = btn.dataset.client || "";
-    const type = btn.dataset.type || "";
-    const excerpt = btn.dataset.excerpt || "";
+    const slug = btn.dataset.project;
+    const p = projectBySlug.get(slug);
+    if (!p) return;
 
-    if (titleEl) titleEl.textContent = title;
-    if (metaEl) metaEl.textContent = [client, type].filter(Boolean).join(" — ");
-    if (excerptEl) excerptEl.textContent = excerpt;
+    if (titleEl) titleEl.textContent = p.title || "";
+    if (metaEl) metaEl.textContent = [p.client, p.type, p.year].filter(Boolean).join(" — ");
+    if (excerptEl) excerptEl.textContent = p.excerpt || "";
 
-    // demo gallery (only while open)
+    // demo gallery (local)
     if (galleryEl) {
       galleryEl.innerHTML = `
         <a href="/images/projects/_demo/01.svg" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
@@ -199,7 +215,9 @@ const years = timeline.map((b) => b.year);
       `;
     }
 
-    overlay.classList.remove("hidden");
+    overlay.hidden = false;
+    overlay.style.pointerEvents = "auto";
+    overlay.classList.remove("hidden", "pointer-events-none");
     overlay.setAttribute("aria-hidden", "false");
     document.documentElement.classList.add("overflow-hidden");
 
@@ -212,7 +230,9 @@ const years = timeline.map((b) => b.year);
   const closeOverlay = () => {
     if (!overlay) return;
 
-    overlay.classList.add("hidden");
+    overlay.classList.add("hidden", "pointer-events-none");
+    overlay.style.pointerEvents = "none";
+    overlay.hidden = true;
     overlay.setAttribute("aria-hidden", "true");
     document.documentElement.classList.remove("overflow-hidden");
 
@@ -226,7 +246,7 @@ const years = timeline.map((b) => b.year);
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-project]");
 
-    // apri solo da timeline, solo quando overlay è chiuso
+    // apri solo se overlay è chiuso
     if (btn && overlay && overlay.classList.contains("hidden")) {
       openOverlay(btn);
       return;
