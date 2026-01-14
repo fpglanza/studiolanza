@@ -190,11 +190,11 @@ const years = timeline.map((b) => b.year);
     // demo gallery (only while open)
     if (galleryEl) {
       galleryEl.innerHTML = `
-        <a href="https://picsum.photos/1200/900?random=1" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
-          <img src="https://picsum.photos/600/450?random=1" alt="" loading="lazy" class="block w-full" />
+        <a href="/images/projects/_demo/01.svg" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
+          <img src="/images/projects/_demo/01.svg" alt="" loading="lazy" class="block w-full" />
         </a>
-        <a href="https://picsum.photos/1200/900?random=2" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
-          <img src="https://picsum.photos/600/450?random=2" alt="" loading="lazy" class="block w-full" />
+        <a href="/images/projects/_demo/02.svg" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
+          <img src="/images/projects/_demo/02.svg" alt="" loading="lazy" class="block w-full" />
         </a>
       `;
     }
@@ -225,7 +225,12 @@ const years = timeline.map((b) => b.year);
 
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-project]");
-    if (btn) openOverlay(btn);
+
+    // apri solo da timeline, solo quando overlay è chiuso
+    if (btn && overlay && overlay.classList.contains("hidden")) {
+      openOverlay(btn);
+      return;
+    }
 
     if (e.target.closest("[data-overlay-close]")) closeOverlay();
 
