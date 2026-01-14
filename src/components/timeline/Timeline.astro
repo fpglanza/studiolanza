@@ -94,13 +94,14 @@ const years = timeline.map((b) => b.year);
         </div>
 
         <p id="overlay-excerpt" class="mt-6 text-base leading-relaxed text-zinc-700"></p>
+        <div id="overlay-gallery" class="mt-8 grid grid-cols-2 gap-3"></div>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  // reveal
+   // reveal
   const items = document.querySelectorAll("[data-reveal]");
   const io = new IntersectionObserver(
     (entries) => {
@@ -124,10 +125,11 @@ const years = timeline.map((b) => b.year);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
+
   // active year (desktop) — stable
   const yearSections = document.querySelectorAll("[data-year]");
   const yearLinks = document.querySelectorAll("[data-year-link]");
-  const ratios = new Map(); // year -> intersectionRatio
+  const ratios = new Map();
 
   const setActive = (year) => {
     yearLinks.forEach((a) => {
@@ -142,14 +144,12 @@ const years = timeline.map((b) => b.year);
   const pickMostVisible = () => {
     let bestYear = null;
     let bestRatio = 0;
-
     for (const [year, ratio] of ratios.entries()) {
       if (ratio > bestRatio) {
         bestRatio = ratio;
         bestYear = year;
       }
     }
-
     if (bestYear) setActive(bestYear);
   };
 
@@ -162,22 +162,22 @@ const years = timeline.map((b) => b.year);
       }
       pickMostVisible();
     },
-    {
-      // "fascia" centrale: riduce i casi in cui 2 anni sono attivi insieme
-      rootMargin: "-35% 0px -55% 0px",
-      threshold: [0, 0.2, 0.4, 0.6, 0.8]
-    }
+    { rootMargin: "-35% 0px -55% 0px", threshold: [0, 0.2, 0.4, 0.6, 0.8] }
   );
 
   yearSections.forEach((s) => yo.observe(s));
-    // overlay (minimal)
+
+  // overlay (minimal) + gallery injected on open
   const overlay = document.getElementById("project-overlay");
   const titleEl = document.getElementById("overlay-title");
   const metaEl = document.getElementById("overlay-meta");
   const excerptEl = document.getElementById("overlay-excerpt");
+  const galleryEl = document.getElementById("overlay-gallery");
+  let lightbox = null;
 
   const openOverlay = (btn) => {
     if (!overlay) return;
+
     const title = btn.dataset.title || "";
     const client = btn.dataset.client || "";
     const type = btn.dataset.type || "";
@@ -187,16 +187,40 @@ const years = timeline.map((b) => b.year);
     if (metaEl) metaEl.textContent = [client, type].filter(Boolean).join(" — ");
     if (excerptEl) excerptEl.textContent = excerpt;
 
+    // demo gallery (only while open)
+    if (galleryEl) {
+      galleryEl.innerHTML = `
+        <a href="https://picsum.photos/1200/900?random=1" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
+          <img src="https://picsum.photos/600/450?random=1" alt="" loading="lazy" class="block w-full" />
+        </a>
+        <a href="https://picsum.photos/1200/900?random=2" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
+          <img src="https://picsum.photos/600/450?random=2" alt="" loading="lazy" class="block w-full" />
+        </a>
+      `;
+    }
+
     overlay.classList.remove("hidden");
     overlay.setAttribute("aria-hidden", "false");
     document.documentElement.classList.add("overflow-hidden");
+
+    import("glightbox").then(({ default: GLightbox }) => {
+      if (lightbox) lightbox.destroy();
+      lightbox = GLightbox({ selector: '[data-gallery="project"]', loop: false });
+    });
   };
 
   const closeOverlay = () => {
     if (!overlay) return;
+
     overlay.classList.add("hidden");
     overlay.setAttribute("aria-hidden", "true");
     document.documentElement.classList.remove("overflow-hidden");
+
+    if (galleryEl) galleryEl.innerHTML = "";
+    if (lightbox) {
+      lightbox.destroy();
+      lightbox = null;
+    }
   };
 
   document.addEventListener("click", (e) => {
@@ -205,7 +229,6 @@ const years = timeline.map((b) => b.year);
 
     if (e.target.closest("[data-overlay-close]")) closeOverlay();
 
-    // click fuori dal pannello
     const panel = e.target.closest('[role="dialog"]');
     const isOverlayClick = overlay && overlay.contains(e.target);
 
