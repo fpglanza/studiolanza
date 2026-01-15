@@ -2,10 +2,12 @@
 import Container from "../layout/Container.astro";
 import TimelineYear from "./TimelineYear.astro";
 import timeline from "../../content/timeline.json";
+import timelineScriptUrl from "../../scripts/timeline.js?url";
 
 const years = timeline.map((b) => b.year);
 ---
-<section class="py-16 md:py-24">
+
+<section class="py-16 md:py-24" data-timeline-root>
   <Container>
     <header class="mb-14 md:mb-20">
       <p class="text-sm tracking-wide text-zinc-600">studiolanza</p>
@@ -106,7 +108,7 @@ const years = timeline.map((b) => b.year);
   set:html={JSON.stringify(timeline)}
 ></script>
 
-<script src="/src/scripts/timeline.js"></script>
+<script type="module" src={timelineScriptUrl}></script>
 
 <style>
   [data-reveal] {

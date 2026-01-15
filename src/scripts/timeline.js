@@ -1,4 +1,9 @@
-const items = document.querySelectorAll("[data-reveal]");
+function initTimeline() {
+
+  const root = document.querySelector("[data-timeline-root]");
+  if (!root) return;
+
+  const items = document.querySelectorAll("[data-reveal]");
   const io = new IntersectionObserver(
     (entries) => {
       for (const e of entries) {
@@ -36,6 +41,8 @@ const items = document.querySelectorAll("[data-reveal]");
       a.classList.toggle("hover:text-zinc-50", isActive);
     });
   };
+
+  if (yearLinks.length) setActive(yearLinks[0].dataset.yearLink);
 
   const pickMostVisible = () => {
     let bestYear = null;
@@ -132,12 +139,10 @@ const items = document.querySelectorAll("[data-reveal]");
 
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-project]");
-
-    // apri solo se overlay è chiuso
-    if (btn && overlay && overlay.classList.contains("hidden")) {
-      openOverlay(btn);
-      return;
-    }
+      if (btn && overlay) {
+        openOverlay(btn);
+        return;
+      }
 
     if (e.target.closest("[data-overlay-close]")) closeOverlay();
 
@@ -152,3 +157,7 @@ const items = document.querySelectorAll("[data-reveal]");
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeOverlay();
   });
+
+}
+
+initTimeline();
