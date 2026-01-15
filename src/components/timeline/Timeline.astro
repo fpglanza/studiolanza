@@ -204,6 +204,7 @@ const years = timeline.map((b) => b.year);
     if (excerptEl) excerptEl.textContent = p.excerpt || "";
 
     // demo gallery (local)
+    //per cambiare i contenuti dell'overlay verrò qui CAMBIOCONTENUTI
     if (galleryEl) {
       galleryEl.innerHTML = `
         <a href="/images/projects/_demo/01.svg" class="block overflow-hidden rounded-xl border border-zinc-200" data-gallery="project">
@@ -215,8 +216,6 @@ const years = timeline.map((b) => b.year);
       `;
     }
 
-    overlay.hidden = false;
-    overlay.style.pointerEvents = "auto";
     overlay.classList.remove("hidden", "pointer-events-none");
     overlay.setAttribute("aria-hidden", "false");
     document.documentElement.classList.add("overflow-hidden");
@@ -231,8 +230,6 @@ const years = timeline.map((b) => b.year);
     if (!overlay) return;
 
     overlay.classList.add("hidden", "pointer-events-none");
-    overlay.style.pointerEvents = "none";
-    overlay.hidden = true;
     overlay.setAttribute("aria-hidden", "true");
     document.documentElement.classList.remove("overflow-hidden");
 
