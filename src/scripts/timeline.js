@@ -21,8 +21,8 @@ function initTimeline() {
   const sel = document.getElementById("year-jump");
   if (sel) {
     sel.addEventListener("change", () => {
-      const id = sel.value;
-      const el = document.getElementById(id);
+      const year = sel.value;
+      const el = document.getElementById(`y-${year}`);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   }
@@ -31,6 +31,7 @@ function initTimeline() {
   const yearSections = document.querySelectorAll("[data-year]");
   const yearLinks = document.querySelectorAll("[data-year-link]");
   const ratios = new Map();
+  let manualActiveUntil = 0;
 
   const setActive = (year) => {
     yearLinks.forEach((a) => {
@@ -45,6 +46,7 @@ function initTimeline() {
   if (yearLinks.length) setActive(yearLinks[0].dataset.yearLink);
 
   const pickMostVisible = () => {
+    if (Date.now() < manualActiveUntil) return;
     let bestYear = null;
     let bestRatio = 0;
     for (const [year, ratio] of ratios.entries()) {
@@ -55,6 +57,8 @@ function initTimeline() {
     }
     if (bestYear) setActive(bestYear);
   };
+  const scroller = document.getElementById("timeline-scroller");
+  const prefersDesktop = window.matchMedia("(min-width: 768px)").matches;
 
   const yo = new IntersectionObserver(
     (entries) => {
@@ -65,7 +69,13 @@ function initTimeline() {
       }
       pickMostVisible();
     },
-    { rootMargin: "-35% 0px -55% 0px", threshold: [0, 0.2, 0.4, 0.6, 0.8] }
+    {
+      root: prefersDesktop ? scroller : null,
+      rootMargin: prefersDesktop
+        ? "0px -55% 0px -35%"
+        : "-35% 0px -55% 0px",
+      threshold: [0, 0.2, 0.4, 0.6, 0.8],
+    }
   );
 
   yearSections.forEach((s) => yo.observe(s));
@@ -115,7 +125,6 @@ function initTimeline() {
 
     overlay.classList.remove("hidden", "pointer-events-none");
     overlay.setAttribute("aria-hidden", "false");
-    document.documentElement.classList.add("overflow-hidden");
 
     import("glightbox").then(({ default: GLightbox }) => {
       if (lightbox) lightbox.destroy();
@@ -128,7 +137,6 @@ function initTimeline() {
 
     overlay.classList.add("hidden", "pointer-events-none");
     overlay.setAttribute("aria-hidden", "true");
-    document.documentElement.classList.remove("overflow-hidden");
 
     if (galleryEl) galleryEl.innerHTML = "";
     if (lightbox) {
@@ -138,17 +146,43 @@ function initTimeline() {
   };
 
   document.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-project]");
-      if (btn && overlay) {
-        openOverlay(btn);
+    // 1) year jump (nav)
+    const yearBtn = e.target.closest("[data-year-jump]");
+    if (yearBtn) {
+      e.preventDefault();
+      const year = yearBtn.dataset.yearJump;
+      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+      setActive(year);
+      manualActiveUntil = Date.now() + 350;
+
+      if (isDesktop) {
+        const track = document.getElementById("timeline-track");
+        if (!track) return;
+
+        const panel = track.querySelector(`[data-year-panel="${year}"]`);
+        if (!panel) return;
+
+        track.scrollTo({ left: panel.offsetLeft, behavior: "smooth" });
         return;
       }
 
+      const el = document.getElementById(`y-${year}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    // 2) open overlay (project card)
+    const btn = e.target.closest("[data-project]");
+    if (btn && overlay) {
+      openOverlay(btn);
+      return;
+    }
+
+    // 3) close overlay
     if (e.target.closest("[data-overlay-close]")) closeOverlay();
 
     const panel = e.target.closest('[role="dialog"]');
     const isOverlayClick = overlay && overlay.contains(e.target);
-
     if (overlay && !overlay.classList.contains("hidden") && isOverlayClick && !panel) {
       closeOverlay();
     }

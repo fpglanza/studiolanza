@@ -19,52 +19,65 @@ const years = timeline.map((b) => b.year);
       </p>
     </header>
 
-    <div class="grid grid-cols-1 gap-10 md:grid-cols-[180px_1fr] md:gap-14">
-      <!-- nav -->
-      <aside class="md:sticky md:top-10 md:self-start">
-        <!-- mobile -->
-        <div class="md:hidden">
-          <label class="sr-only" for="year-jump">Vai all’anno</label>
-          <select
-            id="year-jump"
-            class="w-full rounded-xl border border-zinc-200 bg-white/70 px-4 py-3 text-sm"
-          >
-            {years.map((y) => <option value={`y-${y}`}>{y}</option>)}
-          </select>
-        </div>
+    <!-- years nav (top) -->
+    <nav aria-label="Timeline" class="mb-10 md:mb-14">
+      <!-- mobile -->
+      <div class="md:hidden">
+        <label class="sr-only" for="year-jump">Vai all’anno</label>
+        <select
+          id="year-jump"
+          class="w-full rounded-xl border border-zinc-200 bg-white/70 px-4 py-3 text-sm"
+        >
+          {years.map((y) => <option value={String(y)}>{y}</option>)}
+        </select>
+      </div>
 
-        <!-- desktop -->
-        <nav class="hidden md:block">
-          <p class="mb-4 text-xs tracking-wide text-zinc-600">timeline</p>
-          <ol class="space-y-2">
-            {years.map((y) => (
-              <li>
-                <a
-                  href={`#y-${y}`}
-                  data-year-link={y}
-                  class="inline-flex rounded-full px-3 py-1 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100"
-                >
-                  {y}
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
-      </aside>
+      <!-- desktop -->
+      <ol class="hidden md:flex md:flex-wrap md:justify-center md:gap-2">
+        {years.map((y) => (
+          <li>
+            <button
+              type="button"
+              data-year-jump={y}
+              data-year-link={y}
+              class="inline-flex rounded-full px-3 py-1 text-sm text-zinc-700 hover:text-zinc-900 hover:bg-zinc-100"
+            >
+              {y}
+            </button>
+          </li>
+        ))}
+      </ol>
+    </nav>
 
-      <!-- timeline -->
-      <div class="relative">
-        <div class="pointer-events-none absolute left-3 top-0 h-full w-px bg-zinc-200 md:left-4"></div>
+    <!-- centered timeline -->
+    <div class="mx-auto w-full max-w-4xl">
+    <!-- DESKTOP only -->
+    <div class="hidden md:block">
+      <div id="timeline-track" class="flex overflow-x-auto scroll-smooth snap-x snap-mandatory">
+        {timeline.map((block) => (
+          <section class="w-full shrink-0 snap-start py-10" data-year-panel={block.year}>
+            <div class="mx-auto max-w-3xl">
+              <TimelineYear year={block.year} projects={block.projects} />
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
 
-        <ol class="space-y-14 md:space-y-20">
+    <!-- MOBILE only -->
+    <div class="md:hidden relative">
+      <div class="pointer-events-none absolute left-3 top-0 h-full w-px bg-zinc-200"></div>
+
+        <ol class="space-y-14">
           {timeline.map((block) => (
-            <li>
+            <li id={`y-${block.year}`}>
               <TimelineYear year={block.year} projects={block.projects} />
             </li>
           ))}
         </ol>
-      </div>
     </div>
+  </div>
+  
   </Container>
   <div
     id="project-overlay"
@@ -75,7 +88,7 @@ const years = timeline.map((b) => b.year);
 
     <div class="absolute inset-0 flex items-end md:items-center justify-center p-4 md:p-10">
       <div
-        class="w-full max-w-2xl rounded-2xl bg-zinc-50 border border-zinc-200 shadow-sm p-6 md:p-10"
+        class="w-full max-w-2xl rounded-2xl bg-zinc-50 border border-zinc-200 shadow-sm p-6 md:p-10 overflow-auto"
         role="dialog"
         aria-modal="true"
         aria-labelledby="overlay-title"
@@ -119,5 +132,9 @@ const years = timeline.map((b) => b.year);
   [data-reveal].is-visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  #timeline-track::-webkit-scrollbar {
+    display: none;
   }
 </style>
