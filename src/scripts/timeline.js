@@ -93,10 +93,10 @@ function initTimeline() {
 
   // overlay
   const overlay = document.getElementById("project-overlay");
-  const titleEl = document.getElementById("overlay-title");
-  const metaEl = document.getElementById("overlay-meta");
-  const excerptEl = document.getElementById("overlay-excerpt");
-  const galleryEl = document.getElementById("overlay-gallery");
+  const titleEl = overlay?.querySelector("#overlay-title");
+  const metaEl = overlay?.querySelector("#overlay-meta");
+  const excerptEl = overlay?.querySelector("#overlay-excerpt");
+  const galleryEl = overlay?.querySelector("#overlay-gallery");
   let lightbox = null;
 
   const openOverlay = (btn) => {
@@ -123,6 +123,7 @@ function initTimeline() {
       `;
     }
 
+    overlay.hidden = false;
     overlay.classList.remove("hidden", "pointer-events-none");
     overlay.setAttribute("aria-hidden", "false");
 
@@ -137,6 +138,7 @@ function initTimeline() {
 
     overlay.classList.add("hidden", "pointer-events-none");
     overlay.setAttribute("aria-hidden", "true");
+    overlay.hidden = true;
 
     if (galleryEl) galleryEl.innerHTML = "";
     if (lightbox) {
