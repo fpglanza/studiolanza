@@ -17,6 +17,11 @@ const { project } = Astro.props;
       hover:border-zinc-300
     "
     data-project={project.slug}
+    data-title={project.title}
+    data-client={project.client}
+    data-type={project.type}
+    data-year={project.year ?? ""}
+    data-excerpt={project.excerpt}
   >
     <div class="flex flex-col gap-3">
       <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">

@@ -104,13 +104,21 @@ function initTimeline() {
 
     const slug = btn.dataset.project;
     const p = projectBySlug.get(slug);
-    const linkEl = overlay?.querySelector("#overlay-link");
-    if (linkEl) linkEl.setAttribute("href", `/progetti/${p.slug}/`);
+
+    const title = btn.dataset.title || "";
+    const client = btn.dataset.client || "";
+    const type = btn.dataset.type || "";
+    const year = btn.dataset.year || "";
+    const excerpt = btn.dataset.excerpt || "";
+
     if (!p) return;
 
-    if (titleEl) titleEl.textContent = p.title || "";
-    if (metaEl) metaEl.textContent = [p.client, p.type, p.year].filter(Boolean).join(" — ");
-    if (excerptEl) excerptEl.textContent = p.excerpt || "";
+    if (titleEl) titleEl.textContent = title;
+    if (metaEl) metaEl.textContent = [client, type, year].filter(Boolean).join(" — ");
+    if (excerptEl) excerptEl.textContent = excerpt;
+
+    const linkEl = overlay?.querySelector("#overlay-link");
+    if (linkEl) linkEl.setAttribute("href", `/progetti/${btn.dataset.project}/`);
 
     // demo gallery (local)
     //per cambiare i contenuti dell'overlay verrò qui CAMBIOCONTENUTI
