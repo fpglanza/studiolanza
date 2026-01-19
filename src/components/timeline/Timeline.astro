@@ -3,8 +3,31 @@ import Container from "../layout/Container.astro";
 import TimelineYear from "./TimelineYear.astro";
 import timeline from "../../content/timeline.json";
 import timelineScriptUrl from "../../scripts/timeline.js?url";
+import { getCollection } from "astro:content";
 
 const years = timeline.map((b) => b.year);
+
+const entries = await getCollection("projects");
+const mdBySlug = new Map(entries.map((e) => [e.slug, e.data]));
+
+function resolveProjects(block) {
+  return (block.projects || [])
+    .map((p) => {
+      const data = mdBySlug.get(p.slug);
+      if (!data) return null;
+
+      return {
+        slug: p.slug,
+        year: block.year,
+        title: data.title,
+        client: data.client ?? "",
+        type: data.type ?? "",
+        excerpt: data.excerpt ?? "",
+        tags: p.tags ?? [],
+      };
+    })
+    .filter(Boolean);
+}
 ---
 
 <section class="py-16 md:py-24" data-timeline-root>
@@ -57,7 +80,7 @@ const years = timeline.map((b) => b.year);
         {timeline.map((block) => (
           <section class="w-full shrink-0 snap-start py-10" data-year-panel={block.year}>
             <div class="mx-auto max-w-3xl">
-              <TimelineYear year={block.year} projects={block.projects} />
+              <TimelineYear year={block.year} projects={resolveProjects(block)} />
             </div>
           </section>
         ))}
@@ -70,8 +93,8 @@ const years = timeline.map((b) => b.year);
 
         <ol class="space-y-14">
           {timeline.map((block) => (
-            <li id={`y-${block.year}`}>
-              <TimelineYear year={block.year} projects={block.projects} />
+            <li id={`y-${block.year}`} data-year={block.year}>
+              <TimelineYear year={block.year} projects={resolveProjects(block)} />
             </li>
           ))}
         </ol>

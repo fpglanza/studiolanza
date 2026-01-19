@@ -16,3 +16,5 @@ media:
 Testo editoriale del progetto.
 
 Secondo paragrafo, più descrittivo. Qui puoi usare *corsivo* e **grassetto**.
+
+Non dimentichiamo che *Atlante* era il tipo che reggeva *il mondo* sulle sue spalle, **mica poco**.
