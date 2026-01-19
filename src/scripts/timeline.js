@@ -104,6 +104,8 @@ function initTimeline() {
 
     const slug = btn.dataset.project;
     const p = projectBySlug.get(slug);
+    const linkEl = overlay?.querySelector("#overlay-link");
+    if (linkEl) linkEl.setAttribute("href", `/progetti/${p.slug}/`);
     if (!p) return;
 
     if (titleEl) titleEl.textContent = p.title || "";

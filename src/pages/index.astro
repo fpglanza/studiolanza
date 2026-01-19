@@ -1,7 +1,32 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import Timeline from "../components/timeline/Timeline.astro";
+import Container from "../components/layout/Container.astro";
 ---
 <BaseLayout title="studiolanza — immagine e comunicazione">
-  <Timeline />
-</BaseLayout>
+  <main class="py-24 md:py-32">
+    <Container>
+      <p class="text-sm tracking-wide text-zinc-600">studiolanza</p>
+      <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight">
+        immagine e comunicazione
+      </h1>
+
+      <p class="mt-8 max-w-2xl text-base md:text-lg leading-relaxed text-zinc-700">
+        Studio di comunicazione. Archivio di lavori selezionati lungo oltre vent’anni.
+      </p>
+
+      <nav class="mt-10 flex flex-wrap gap-3">
+        <a
+          href="/archivio"
+          class="inline-flex rounded-full border border-zinc-200 bg-white/60 px-5 py-2 text-sm text-zinc-800 hover:border-zinc-300"
+        >
+          Archivio
+        </a>
+        <a
+          href="/contatti"
+          class="inline-flex rounded-full border border-zinc-200 bg-white/60 px-5 py-2 text-sm text-zinc-800 hover:border-zinc-300"
+        >
+          Contatti
+        </a>
+      </nav>
+    </Container>
+  </main>
