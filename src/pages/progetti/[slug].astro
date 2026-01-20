@@ -23,7 +23,7 @@ const { Content } = await entry.render();
 ---
 
 <BaseLayout title={`studiolanza — ${data.title}`}>
-  <main class="py-20 md:py-28">
+  <main class="py-24 md:py-32">
     <Container>
       <article class="mx-auto max-w-3xl">
 
@@ -36,77 +36,136 @@ const { Content } = await entry.render();
         </h1>
 
         {data.excerpt && (
-          <p class="mt-8 text-base md:text-lg leading-relaxed text-zinc-700">
+          <p class="mt-14 text-base md:text-lg leading-relaxed text-zinc-700">
             {data.excerpt}
           </p>
         )}
 
-        <section class="mt-14">
-          <!-- thumbnails -->
-          <div
-            class="flex gap-3 overflow-x-auto pb-3"
-            style="scrollbar-width: none;"
-            aria-label="Media"
-          >
-            {data.media.map((m, i) => (
-              <button
-                type="button"
-                class="media-thumb shrink-0 rounded-lg border border-zinc-200 bg-white/60 p-1"
-                data-kind={m.kind}
-                data-src={m.src}
-                aria-current={i === 0 ? "true" : "false"}
-                title={m.kind === "video" ? "Video" : `Immagine ${i + 1}`}
-              >
-                {m.kind === "video" ? (
-                  <div class="h-16 w-24 rounded-md bg-zinc-100 grid place-items-center text-xs text-zinc-600">
-                    video
-                  </div>
-                ) : (
-                  <img
-                    src={m.thumb ?? m.src}
-                    alt=""
-                    class="h-16 w-24 object-cover rounded-md"
-                    loading="lazy"
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-
+        <section class="mt-24">
           <!-- viewer -->
-          <div class="mt-6 rounded-xl border border-zinc-200 bg-white/50 overflow-hidden">
-            <div id="media-viewer" class="aspect-[4/3] md:aspect-[16/10] bg-zinc-100"></div>
+          <div class="rounded-xl border border-zinc-200 bg-white/50 overflow-hidden relative">
+            <button
+              id="media-lightbox-trigger"
+              type="button"
+              class="absolute inset-0 z-10"
+              aria-label="Apri media a schermo intero"
+            ></button>
+
+            <div id="media-viewer" class="relative z-0 aspect-[4/3] md:aspect-[16/10] bg-zinc-100"></div>
+
+            <button
+              type="button"
+              class="media-prev absolute left-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-zinc-200 bg-white/70 px-3 py-2 text-sm text-zinc-800 hover:border-zinc-300"
+              aria-label="Media precedente"
+            >
+              ←
+            </button>
+
+            <button
+              type="button"
+              class="media-next absolute right-3 top-1/2 z-20 -translate-y-1/2 rounded-full border border-zinc-200 bg-white/70 px-3 py-2 text-sm text-zinc-800 hover:border-zinc-300"
+              aria-label="Media successivo"
+            >
+              →
+            </button>
           </div>
 
           {data.media.length === 0 && (
             <p class="mt-4 text-sm text-zinc-600">Nessun media disponibile.</p>
           )}
+
+          <!-- thumbnails -->
+          {data.media.length > 0 && (
+            <div class="mt-8">
+              <div
+                class="flex gap-3 overflow-x-auto pb-3"
+                style="scrollbar-width: none;"
+                aria-label="Media"
+              >
+                {data.media.map((m, i) => (
+                  <button
+                    type="button"
+                    class="media-thumb shrink-0 rounded-lg border border-zinc-200 bg-white/60 p-1"
+                    data-kind={m.kind}
+                    data-src={m.src}
+                    aria-current={i === 0 ? "true" : "false"}
+                    title={m.kind === "video" ? "Video" : `Immagine ${i + 1}`}
+                  >
+                    {m.kind === "video" ? (
+                      <div class="h-16 w-24 rounded-md bg-zinc-100 grid place-items-center text-xs text-zinc-600">
+                        video
+                      </div>
+                    ) : (
+                      <img
+                        src={m.thumb ?? m.src}
+                        alt=""
+                        class="h-16 w-24 object-cover rounded-md"
+                        loading="lazy"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
+        
+        <div
+          id="project-lightbox"
+          class="fixed inset-0 z-50 hidden"
+          aria-hidden="true"
+          hidden
+        >
+          <div class="absolute inset-0 bg-zinc-900/60" data-plb-backdrop></div>
 
-        <script type="module" src={mediaScriptUrl}></script>
+          <div class="absolute inset-0 flex items-center justify-center p-6 md:p-14">
+            <div
+              class="relative w-full max-w-5xl"
+              role="dialog"
+              aria-modal="true"
+            >
+              <button
+                type="button"
+                class="absolute right-0 -top-10 rounded-full border border-zinc-200 bg-white/70 px-3 py-1 text-sm text-zinc-900 hover:border-zinc-300"
+                data-plb-close
+              >
+                Chiudi
+              </button>
 
-        <style>
-          /* hide scrollbar (webkit) */
-          .media-thumb::-webkit-scrollbar { display: none; }
+              <div
+                id="project-lightbox-content"
+                class="max-h-[85vh] overflow-hidden rounded-xl bg-transparent"
+              ></div>
+            </div>
+          </div>
+        </div>
 
-          /* subtle active state */
-          .media-thumb[aria-current="true"] {
-            border-color: rgb(24 24 27); /* zinc-900 */
-          }
+        
 
-          /* thumbnails bar scrollbar */
-          .media-thumb + .media-thumb { }
-          .media-thumb { transition: border-color 180ms ease; }
-          .media-thumb:focus-visible { outline: 2px solid rgb(24 24 27); outline-offset: 2px; }
-
-          .media-thumb.is-active { border-color: rgb(24 24 27); }
-        </style>
-
-        <section class="mt-14 prose prose-zinc max-w-none">
+        <section class="mt-24 prose prose-zinc max-w-none">
           <Content />
         </section>
 
       </article>
     </Container>
   </main>
+
+   <script type="module" src={mediaScriptUrl}></script>
+
+  <style>
+    /* hide scrollbar (webkit) */
+    .media-thumb::-webkit-scrollbar { display: none; }
+
+    /* subtle active state */
+    .media-thumb[aria-current="true"] {
+      border-color: rgb(24 24 27); /* zinc-900 */
+    }
+
+    /* thumbnails bar scrollbar */
+    .media-thumb + .media-thumb { }
+    .media-thumb { transition: border-color 180ms ease; }
+    .media-thumb:focus-visible { outline: 2px solid rgb(24 24 27); outline-offset: 2px; }
+
+    .media-thumb.is-active { border-color: rgb(24 24 27); }
+  </style>
 </BaseLayout>

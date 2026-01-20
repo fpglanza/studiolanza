@@ -12,7 +12,7 @@ const { year, projects } = Astro.props;
     <h2 class="text-xl md:text-2xl font-medium tracking-tight">{year}</h2>
   </div>
 
-  <div class="space-y-8">
+  <div class="space-y-10 md:space-y-12">
     {projects.map((p) => <TimelineProjectCard project={p} />)}
   </div>
 </section>

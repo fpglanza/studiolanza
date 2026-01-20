@@ -78,7 +78,7 @@ function resolveProjects(block) {
     <div class="hidden md:block">
       <div id="timeline-track" class="flex overflow-x-auto scroll-smooth snap-x snap-mandatory">
         {timeline.map((block) => (
-          <section class="w-full shrink-0 snap-start py-10" data-year-panel={block.year}>
+          <section class="w-full shrink-0 snap-start py-12 md:py-16" data-year-panel={block.year}>
             <div class="mx-auto max-w-3xl">
               <TimelineYear year={block.year} projects={resolveProjects(block)} />
             </div>
@@ -91,7 +91,7 @@ function resolveProjects(block) {
     <div class="md:hidden relative">
       <div class="pointer-events-none absolute left-3 top-0 h-full w-px bg-zinc-200"></div>
 
-        <ol class="space-y-14">
+        <ol class="space-y-20">
           {timeline.map((block) => (
             <li id={`y-${block.year}`} data-year={block.year}>
               <TimelineYear year={block.year} projects={resolveProjects(block)} />
